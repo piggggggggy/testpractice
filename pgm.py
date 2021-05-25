@@ -1,68 +1,79 @@
 
-
-#
-# def solution(name):
-# 위아래@@
-
-    # name = 'AABBBBSSADAABA'
-    # alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    # updown = 0
-    # for spel in name:
-    #     num = alphabet.index(spel)
-    #     if num < 13:
-    #         updown += num
-    #     else:
-    #         updown += (26-num)
-
-    # updown : A->? 조이스틱 횟수의 합
-
-# 좌우@@
+def solution(name):
     N = len(name)
+    alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    updown = 0
+    for spel in name:
+        num = alphabet.index(spel)
+        if num < 13:
+            updown += num
+        else:
+            updown += (26-num)
 
-    # 1. 오른쪽으로만 갈 경우   'AXXAAXXA' 라고 했을 때 가장 마지막에 있는 X의 index값
-    i=1
+    i = 1
     while i < N:
         if name[N-i] != 'A':
             break
         i +=1
     right = N - i
 
-#     # 2. 왼쪽으로만 갈 경우
-    for j in range(N):
-        if name[j+1] == 'A':
-            pass
-        else:
+    j = 1
+    while j < N:
+        if name[j] != 'A':
             break
-    left = N - (j+1)
+        j += 1
+    left = N - j
 
-#     # 3. 오른쪽갔다가 왼쪽으로 갈 경우
     lst = []
-    t = 0
-    for l in name:
-        if l != 'A':
-            lst.append(t)
-        t += 1
+    for i, v in enumerate(name):
+        if v != 'A':
+            lst.append(i)
 
+    # 3-1. 오른쪽 갔다가 왼쪽
+    rightleft = 0
+    if len(lst) > 1 and lst[0] != 0:
+        k = 0
+        while k < len(lst) - 1:
+            move = 2 * lst[k] + N - lst[k + 1]
+            # rightleft.append(move)
+            if rightleft == 0 or move < rightleft:
+                rightleft = move
+            k += 1
+    elif len(lst) > 1 and lst[0] == 0:
+        l = 1
+        while l < len(lst) - 1:
+            move = 2 * lst[l] + N - lst[l + 1]
+            # rightleft.append(move)
+            if rightleft == 0 or move < rightleft:
+                rightleft = move
+            l += 1
 
-    rl = []
-    le = len(lst)
-    if le >1:
-        if lst[0] != 0:
-            for q in range(le-1):
-                o = (2*lst[q]+N-lst[q+1])
-                rl.append(o)
-        else:
-            for q in range(1,le-1):
-                o = (2 * lst[q] + N - lst[q + 1])
-                rl.append(o)
+    leftright = 0
+    if len(lst) > 1 and lst[0] != 0:
+        k = -1
+        while -k < len(lst):
+            move = 2 * (N - lst[k]) + lst[k - 1]
+            # leftright.append(move)
+            if leftright == 0 or move < leftright:
+                leftright = move
+            k -= 1
+    elif len(lst) > 1 and lst[0] == 0:
+        k = -1
+        while -k < len(lst)-1:
+            move = 2 * (N - lst[k]) + lst[k - 1]
+            # leftright.append(move)
+            if leftright == 0 or move < leftright:
+                leftright = move
+            k -= 1
+
+    if leftright>0 and rightleft>0:
+        mini = min(right, left, leftright,rightleft)
+    elif leftright == 0 and rightleft>0:
+        mini = min(right, left, rightleft)
+    elif rightleft == 0 and leftright >0:
+        mini = min(right, left, leftright)
     else:
-        for m in lst:
-            o = m
-            rl.append(o)
+        mini = min(right,left)
 
-    # 1,2,3의 경우 중 최소값과 위아래 최소값의 합
-    answer = min(right,left,min(rl))+updown
-    return print(answer)
-
-aaaa = 'JADDZ'
-solution(aaaa)
+    answer = mini + updown
+    return answer
