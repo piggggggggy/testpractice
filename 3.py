@@ -15,8 +15,7 @@ print(count)
 # count = 0
 # while True:
 #     a += N%K
-#     if N//K == 0 or :
-#         break
+#     if N//K == 0 or : 1
 #     else:
 #         N = N//K
 #         count +=1
